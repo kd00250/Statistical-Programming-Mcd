@@ -17,6 +17,83 @@ data <- India_Menu
 test_data <- na.omit(data[,c(4:13)])
 pairs(test_data)
 
+#barplot of top 10 calories items
+top10_cals <- data %>%
+  arrange(desc(`Energy (kCal)`)) %>%
+  slice(1:10)
+
+topTenCals <- ggplot(top10_cals, aes(x = reorder(`Menu Items`, `Energy (kCal)`), y = `Energy (kCal)`)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Highest Calorie Items",
+       x = "Menu Item",
+       y = "Calories (kCal)") +
+  theme_minimal()
+
+print(topTenCals)
+
+#barplot of top 10 protien 
+top10_protein <- data %>%
+  arrange(desc(`Protein (g)`)) %>%
+  slice(1:10)
+
+topTenProtein <- ggplot(top10_protein, aes(x = reorder(`Menu Items`, `Protein (g)`), y = `Protein (g)`)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Highest Protein Items",
+       x = "Menu Item",
+       y = "Protein (g)") +
+  theme_minimal()
+
+print(topTenProtein)
+
+#barplot of top 10 Cholesterol
+top10_cholesterol <- data %>%
+  arrange(desc(`Cholesterols (mg)`)) %>%
+  slice(1:10)
+
+topTenCholesterol <- ggplot(top10_cholesterol, aes(x = reorder(`Menu Items`, `Cholesterols (mg)`), y = `Cholesterols (mg)`)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Highest Cholesterol Items",
+       x = "Menu Item",
+       y = "Cholesterols (g)") +
+  theme_minimal()
+
+print(topTenCholesterol)
+
+#barplot of top 10 sugars
+top10_sugar <- data %>% 
+  arrange(desc(`Total Sugars (g)`)) %>%
+  slice(1:10)
+
+topTenSugars <- ggplot(top10_sugar, aes(x = reorder(`Menu Items`, `Total Sugars (g)`), y = `Total Sugars (g)`)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Highest Total Sugars Items",
+       x = "Menu Item",
+       y = "Total Sugars (g)") +
+  theme_minimal()
+
+print(topTenSugars)
+
+#barplot of top 10 sugars (taking out drinks)
+data_take_out_drinks <- data %>%
+  filter(`Menu Category` != "Beverages Menu") %>% 
+  arrange(desc(`Total Sugars (g)`)) %>%
+  slice(1:10)
+
+topTenSugarsWithoutDrinks <- ggplot(data_take_out_drinks, aes(x = reorder(`Menu Items`, `Total Sugars (g)`), y = `Total Sugars (g)`)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Top 10 Highest Total Sugars Items (Without drinks)",
+       x = "Menu Item",
+       y = "Total Sugars (g)") +
+  theme_minimal()
+
+print(topTenSugarsWithoutDrinks)
+
+#barplot of bottom Ten
 
 #Heatmap
 mt <- cor(testdata)
@@ -26,7 +103,10 @@ heatmap(mt, scale = 'none', Rowv = NA,
 
 
 #linear regression 1
-mod <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data)
+data_no_drinks <- data %>%
+  filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu") %>% filter(`Menu Category` != "McCafe Menu")
+
+mod <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
 fig1 <- ggplot(mod, aes(y = `Total fat (g)`, x = `Energy (kCal)`)) +
   geom_point() + 
   geom_line(aes(y = mod$fitted.values), color = "blue") + 
@@ -38,7 +118,8 @@ fig1 <- ggplot(mod, aes(y = `Total fat (g)`, x = `Energy (kCal)`)) +
 print(fig1)
 
 #linear regression 2
-mod2 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data)
+
+mod2 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
 fig2 <- ggplot(mod2, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`)) +
   geom_point() + 
   geom_line(aes(y = mod2$fitted.values), color = "blue") + 
@@ -50,7 +131,7 @@ fig2 <- ggplot(mod2, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`)) +
 print(fig2)
 
 #linear regression 3
-clean <- data %>% drop_na(`Sodium (mg)`, `Energy (kCal)`)
+clean <- data %>% drop_na(`Sodium (mg)`, `Energy (kCal)`) %>% filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu") %>% filter(`Menu Category` != "McCafe Menu")
 mod3 <- lm(`Sodium (mg)` ~ `Energy (kCal)`, data = clean)
 clean$pred_sodium <- mod3$fitted.values
 fig3 <- ggplot(clean, aes(x = `Energy (kCal)`, y = `Sodium (mg)`)) +
@@ -64,9 +145,10 @@ fig3 <- ggplot(clean, aes(x = `Energy (kCal)`, y = `Sodium (mg)`)) +
 print(fig3)
 
 #linear regression 4
-mod_sugar <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data)
+data_no_drinks_clean <- data_no_drinks %>% filter(`Added Sugars (g)` != 0)
+mod_sugar <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data_no_drinks_clean)
 
-fig4 <- ggplot(data, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`)) +
+fig4 <- ggplot(mod_sugar, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`)) +
   geom_point() +
   geom_line(aes(y = mod_sugar$fitted.values), color = "blue") +
   xlab("Added Sugars (g)") +
@@ -77,9 +159,9 @@ fig4 <- ggplot(data, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`)) +
 print(fig4)
 
 #linear regression 5
-mod_fat <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data)
+mod_fat <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data_no_drinks)
 
-fig5 <- ggplot(data, aes(x = `Sat Fat (g)`, y = `Total fat (g)`)) +
+fig5 <- ggplot(mod_fat, aes(x = `Sat Fat (g)`, y = `Total fat (g)`)) +
   geom_point() +
   geom_line(aes(y = mod_fat$fitted.values), color = "blue") +
   xlab("Saturated Fat (g)") +
@@ -90,10 +172,10 @@ fig5 <- ggplot(data, aes(x = `Sat Fat (g)`, y = `Total fat (g)`)) +
 print(fig5)
 
 #linear regression 6
-clean <- data %>% filter(!is.na(`Protein (g)`), !is.na(`Sodium (mg)`))
+clean <- data %>% filter(!is.na(`Protein (g)`), !is.na(`Sodium (mg)`)) %>% filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu")
 mod_protein <- lm(`Protein (g)` ~ `Sodium (mg)`, data = clean)
 
-fig6 <- ggplot(clean, aes(x = `Sodium (mg)`, y = `Protein (g)`)) +
+fig6 <- ggplot(mod_protein, aes(x = `Sodium (mg)`, y = `Protein (g)`)) +
   geom_point() +
   geom_line(aes(y = mod_protein$fitted.values), color = "blue") +
   xlab("Sodium (mg)") +
