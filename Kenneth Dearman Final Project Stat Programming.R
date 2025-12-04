@@ -294,12 +294,13 @@ heatmap(mt, scale = 'none', Rowv = NA,
 data_no_drinks <- data %>%
   filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu") %>% filter(`Menu Category` != "McCafe Menu")
 
-mod <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
+#mod <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
 #data_no_drinks$fitted <- fitted(mod)
 
-fig1 <- ggplot(data_no_drinks, aes(y = `Total fat (g)`, x = `Energy (kCal)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) + 
-  geom_line(aes(y = mod$fitted.values), color = "blue") + 
+fig1 <- ggplot(data_no_drinks, aes(y = `Total fat (g)`, x = `Energy (kCal)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) + 
+  #geom_line(aes(y = mod$fitted.values), color = "blue") + 
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Total Fat") + 
   ggtitle("Total Fat vs Calories (excluding drinks, condiments, and cafe menu)") + 
@@ -309,10 +310,11 @@ print(fig1)
 
 
 #linear regression 1.5
-mod1_5 <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data)
-fig1_5 <- ggplot(data, aes(y = `Total fat (g)`, x = `Energy (kCal)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) + 
-  geom_line(aes(y = mod1_5$fitted.values), color = "blue") + 
+#mod1_5 <- lm(`Total fat (g)` ~ `Energy (kCal)`, data = data)
+fig1_5 <- ggplot(data, aes(y = `Total fat (g)`, x = `Energy (kCal)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) + 
+  #geom_line(aes(y = mod1_5$fitted.values), color = "blue") + 
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Total Fat") + 
   ggtitle("Total Fat vs Calories (Every Menu Item)") + 
@@ -322,10 +324,11 @@ print(fig1_5)
 
 #linear regression 2
 
-mod2 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
-fig2 <- ggplot(data_no_drinks, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) + 
-  geom_line(aes(y = mod2$fitted.values), color = "blue") + 
+#mod2 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data_no_drinks)
+fig2 <- ggplot(data_no_drinks, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) + 
+  #geom_line(aes(y = mod2$fitted.values), color = "blue") + 
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Saturated Fat") + 
   ggtitle("Saturated Fat vs Carbs (excluding drinks, condiments, and cafe menu)") + 
@@ -334,10 +337,11 @@ fig2 <- ggplot(data_no_drinks, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`, fill 
 print(fig2)
 
 #linear regression 2.5
-mod2_5 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data)
-fig2_5 <- ggplot(data, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) + 
-  geom_line(aes(y = mod2_5$fitted.values), color = "blue") + 
+#mod2_5 <- lm(`Sat Fat (g)` ~ `Energy (kCal)`, data = data)
+fig2_5 <- ggplot(data, aes(y = `Sat Fat (g)`, x = `Energy (kCal)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) + 
+  #geom_line(aes(y = mod2_5$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Saturated Fat") + 
   ggtitle("Saturated Fat vs Carbs (Every Menu Item)") + 
@@ -347,11 +351,12 @@ print(fig2_5)
 
 #linear regression 3
 clean <- data %>% drop_na(`Sodium (mg)`, `Energy (kCal)`) %>% filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu") %>% filter(`Menu Category` != "McCafe Menu")
-mod3 <- lm(`Sodium (mg)` ~ `Energy (kCal)`, data = clean)
-clean$pred_sodium <- mod3$fitted.values
-fig3 <- ggplot(clean, aes(x = `Energy (kCal)`, y = `Sodium (mg)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = pred_sodium), color = "blue") +
+#mod3 <- lm(`Sodium (mg)` ~ `Energy (kCal)`, data = clean)
+#clean$pred_sodium <- mod3$fitted.values
+fig3 <- ggplot(clean, aes(x = `Energy (kCal)`, y = `Sodium (mg)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = pred_sodium), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Sodium (mg)") +
   ggtitle("Sodium (mg) vs Energy (Calories) (excluding drinks, condiments, and cafe menu)") +
@@ -361,11 +366,12 @@ print(fig3)
 
 #linear regression 3.5
 clean_all_data <- data %>% drop_na(`Sodium (mg)`, `Energy (kCal)`)
-mod3_5 <- lm(`Sodium (mg)` ~ `Energy (kCal)`, data = clean_all_data)
-clean_all_data$pred_sodium <- mod3_5$fitted.values
-fig3_5 <- ggplot(clean_all_data, aes(x = `Energy (kCal)`, y = `Sodium (mg)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = pred_sodium), color = "blue") +
+#mod3_5 <- lm(`Sodium (mg)` ~ `Energy (kCal)`, data = clean_all_data)
+#clean_all_data$pred_sodium <- mod3_5$fitted.values
+fig3_5 <- ggplot(clean_all_data, aes(x = `Energy (kCal)`, y = `Sodium (mg)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = pred_sodium), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Calories") +
   ylab("Sodium (mg)") +
   ggtitle("Sodium (mg) vs Energy (Calories) (Every Menu Item)") +
@@ -376,11 +382,12 @@ print(fig3_5)
 
 #linear regression 4
 data_no_drinks_clean <- data_no_drinks %>% filter(`Added Sugars (g)` != 0)
-mod_sugar <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data_no_drinks_clean)
+#mod_sugar <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data_no_drinks_clean)
 
-fig4 <- ggplot(data_no_drinks_clean, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_sugar$fitted.values), color = "blue") +
+fig4 <- ggplot(data_no_drinks_clean, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_sugar$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Added Sugars (g)") +
   ylab("Total Sugars (g)") +
   ggtitle("Total Sugars vs Added Sugars (excluding drinks, condiments, and cafe menu)") +
@@ -390,11 +397,12 @@ print(fig4)
 
 #linear regression 4.5
 data_clean <- data %>% filter(`Added Sugars (g)` != 0)
-mod_sugar_4_5 <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data_clean)
+#mod_sugar_4_5 <- lm(`Total Sugars (g)` ~ `Added Sugars (g)`, data = data_clean)
 
-fig4_5 <- ggplot(data_clean, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_sugar_4_5$fitted.values), color = "blue") +
+fig4_5 <- ggplot(data_clean, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_sugar_4_5$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Added Sugars (g)") +
   ylab("Total Sugars (g)") +
   ggtitle("Total Sugars vs Added Sugars (Every Menu Item)") +
@@ -403,11 +411,12 @@ fig4_5 <- ggplot(data_clean, aes(x = `Added Sugars (g)`, y = `Total Sugars (g)`,
 print(fig4_5)
 
 #linear regression 5
-mod_fat <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data_no_drinks)
+#mod_fat <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data_no_drinks)
 
-fig5 <- ggplot(data_no_drinks, aes(x = `Sat Fat (g)`, y = `Total fat (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_fat$fitted.values), color = "blue") +
+fig5 <- ggplot(data_no_drinks, aes(x = `Sat Fat (g)`, y = `Total fat (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_fat$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Saturated Fat (g)") +
   ylab("Total Fat (g)") +
   ggtitle("Total Fat vs Saturated Fat (excluding drinks, condiments, and cafe menu)") +
@@ -416,11 +425,12 @@ fig5 <- ggplot(data_no_drinks, aes(x = `Sat Fat (g)`, y = `Total fat (g)`, fill 
 print(fig5)
 
 #linear regression 5.5
-mod_fat_5_5 <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data)
+#mod_fat_5_5 <- lm(`Total fat (g)` ~ `Sat Fat (g)`, data = data)
 
-fig5_5 <- ggplot(data, aes(x = `Sat Fat (g)`, y = `Total fat (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_fat_5_5$fitted.values), color = "blue") +
+fig5_5 <- ggplot(data, aes(x = `Sat Fat (g)`, y = `Total fat (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_fat_5_5$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Saturated Fat (g)") +
   ylab("Total Fat (g)") +
   ggtitle("Total Fat vs Saturated Fat (Every Menu Item)") +
@@ -430,11 +440,12 @@ print(fig5_5)
 
 #linear regression 6
 clean <- data %>% filter(!is.na(`Protein (g)`), !is.na(`Sodium (mg)`)) %>% filter(`Menu Category` != "Beverages Menu") %>% filter(`Menu Category` != "Condiments Menu")
-mod_protein <- lm(`Protein (g)` ~ `Sodium (mg)`, data = clean)
+#mod_protein <- lm(`Protein (g)` ~ `Sodium (mg)`, data = clean)
 
-fig6 <- ggplot(clean, aes(x = `Sodium (mg)`, y = `Protein (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_protein$fitted.values), color = "blue") +
+fig6 <- ggplot(clean, aes(x = `Sodium (mg)`, y = `Protein (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_protein$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Sodium (mg)") +
   ylab("Protein (g)") +
   ggtitle("Protein vs Sodium (excluding drinks, and condiments)") +
@@ -444,17 +455,19 @@ print(fig6)
 
 #linear regression 6.5
 clean_6_5 <- data %>% filter(!is.na(`Protein (g)`), !is.na(`Sodium (mg)`))
-mod_protein_6_5 <- lm(`Protein (g)` ~ `Sodium (mg)`, data = clean_6_5)
+#mod_protein_6_5 <- lm(`Protein (g)` ~ `Sodium (mg)`, data = clean_6_5)
 
-fig6_5 <- ggplot(clean_6_5, aes(x = `Sodium (mg)`, y = `Protein (g)`, fill = `Menu Category`)) +
-  geom_point(shape = 21, size = 3) +
-  geom_line(aes(y = mod_protein_6_5$fitted.values), color = "blue") +
+fig6_5 <- ggplot(clean_6_5, aes(x = `Sodium (mg)`, y = `Protein (g)`)) +
+  geom_point(aes(fill = `Menu Category`), shape = 21, size = 3) +
+  #geom_line(aes(y = mod_protein_6_5$fitted.values), color = "blue") +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
   xlab("Sodium (mg)") +
   ylab("Protein (g)") +
   ggtitle("Protein vs Sodium (Every Menu Item)") +
   theme_minimal()
 
 print(fig6_5)
+
 
 dev.off()
 getwd()
